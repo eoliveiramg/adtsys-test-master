@@ -1,19 +1,16 @@
 class HomeController < ApplicationController
+  include Concerns::WebmotorsCars
+
   def index
-    #search the make
-    uri = URI("http://www.webmotors.com.br/carro/marcas")
+    persist_brands(brands)
+  end
 
-    # Make request for Webmotors site
-    response = Net::HTTP.post_form(uri, {})
-    json = JSON.parse response.body
+  private
+  def persist_brands(brands)
+    brands.each do |brand_param|
+      next if Make.find_by_name(brand_param["Nome"])
 
-    debugger
-
-    # Itera no resultado e grava as marcas que ainda não estão persistidas
-    json.each do |make_params|
-      if Make.where(name: make_params["Nome"]).size == 0
-        Make.create(name: make_params["Nome"], webmotors_id: make_params["Id"])
-      end
+      Make.create(name: brand_param["Nome"], webmotors_id: brand_param["Id"])
     end
   end
 end
