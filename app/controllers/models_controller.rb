@@ -1,21 +1,16 @@
 class ModelsController < ApplicationController
+  include Concerns::WebmotorsCars
+
   def index
-    #search the models
-    uri = URI("http://www.webmotors.com.br/carro/modelos")
+    persist_models(params[:webmotors_make_id])
+  end
 
-    # Make request for Webmotors site
-    make = Make.where(webmotors_id: params[:webmotors_make_id])[0]
-
-    response = Net::HTTP.post_form(uri, { marca: params[:webmotors_make_id] })
-    models_json = JSON.parse response.body
-
-    # debugger
-
-    # Itera no resultado e grava os modelos que ainda não estão persistidas
-    models_json.each do |json|
-      if Model.where(name: json["Nome"], make_id: make.id).size == 0
-        Model.create(make_id: make.id, name: json["Nome"])
-      end
+  private
+  def persist_models(brand_id)
+    models({ marca: brand_id }).each do |model_param|
+      next if Model.where(name: model_param['Nome'], make_id: brand_id).any?
+      
+      Model.create(make_id: brand_id, name: model_param["Nome"])
     end
   end
 end
