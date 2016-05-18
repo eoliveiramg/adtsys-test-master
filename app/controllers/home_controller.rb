@@ -3,6 +3,8 @@ class HomeController < ApplicationController
 
   def index
     persist_brands(brands)
+
+    @makes = Make.all
   end
 
   private
