@@ -2,7 +2,9 @@ class ModelsController < ApplicationController
   include Concerns::WebmotorsCars
 
   def index
-    persist_models(params[:webmotors_make_id])
+    persist_models(params[:webmotors_brand_id])
+
+    @models = Model.where(make_id: params[:webmotors_brand_id])
   end
 
   private
