@@ -2,7 +2,7 @@
   <div>
     <label>Escolha a Fabricante:</label>
     <select name="webmotors_brand_id">
-      <% @makes.each do |brand| %>
+      <% @brands.each do |brand| %>
         <option value="<%= brand.webmotors_id %>"><%= brand.name %></option>
       <% end %>
     </select>
